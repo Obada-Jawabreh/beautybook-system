@@ -9,8 +9,9 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import { GETstaffDetails } from "@/services/user";
+import { GETstaffDetails, POSTbooking } from "@/services/user";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function StaffDetails() {
   const { staffId } = useParams();
@@ -29,6 +30,7 @@ function StaffDetails() {
     slots.forEach((slot) => {
       if (!groupedSlots[slot.date]) {
         groupedSlots[slot.date] = {
+          id: slot.id,
           date: slot.date,
           dayName: slot.dayName,
           slots: [],
@@ -57,6 +59,7 @@ function StaffDetails() {
         setServices(staff.services || []);
 
         const groupedSlots = groupSlotsByDate(availableSlots);
+
         setAvailableSlots(groupedSlots);
       } catch (err) {
         console.error("Error fetching staff details:", err);
@@ -83,19 +86,41 @@ function StaffDetails() {
         ...slot,
         date: daySlots.date,
         dayName: daySlots.dayName,
+        appointmentId: daySlots.id,
       });
     }
   };
 
-  const handleBooking = () => {
-    setBookingConfirmed(true);
-    setTimeout(() => {
-      setBookingConfirmed(false);
-      setSelectedService(null);
-      setSelectedSlot(null);
-    }, 3000);
-  };
+  const handleBooking = async () => {
+    if (!selectedService || !selectedSlot) {
+      console.error("Service or Slot not selected");
+      return;
+    }
 
+    try {
+      const bookingData = {
+        appointmentId: selectedSlot.appointmentId,
+        serviceId: selectedService.id,
+        booking_start_time: selectedSlot.time,
+        staff_id: staffId,
+      };
+
+      const response = await POSTbooking(bookingData);
+      toast.success(response.message);
+
+      console.log("Booking created:", response);
+
+      setBookingConfirmed(true);
+      setTimeout(() => {
+        setBookingConfirmed(false);
+        setSelectedService(null);
+        setSelectedSlot(null);
+      }, 3000);
+    } catch (error) {
+      console.error("Error creating booking:", error);
+      setError("Error confirming booking. Please try again.");
+    }
+  };
   const handleGoBack = () => {
     window.history.back();
   };
@@ -280,7 +305,7 @@ function StaffDetails() {
                     </div>
                   </div>
                   <button
-                    onClick={handleBooking}
+                    onClick={handleBooking()}
                     className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors mt-4"
                   >
                     Confirm Booking

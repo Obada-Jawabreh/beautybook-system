@@ -10,17 +10,37 @@ router.get(
   checkRole(["staff"]),
   servicesController.getMyServices
 );
+router.get("/my-users", auth, servicesController.getMyClients);
 
-router.post("/add-appointment", auth, appointmentController.createAppointment);
-router.get("/get-appointments", auth, appointmentController.getAppointments);
+router.post(
+  "/add-appointment",
+  auth,
+  checkRole(["staff"]),
+  appointmentController.createAppointment
+);
+router.get(
+  "/get-appointments",
+  auth,
+  checkRole(["staff"]),
+  appointmentController.getAppointments
+);
 router.put(
   "/update-appointment/:id",
   auth,
+  checkRole(["staff"]),
+
   appointmentController.updateAppointment
 );
 router.delete(
   "/delete-appointment/:id",
   auth,
+  checkRole(["staff"]),
   appointmentController.deleteAppointment
+);
+router.put(
+  "/update-booking-status/:bookingId",
+  auth,
+  checkRole(["staff"]),
+  servicesController.updateBookingStatus
 );
 module.exports = router;

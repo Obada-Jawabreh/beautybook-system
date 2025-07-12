@@ -24,3 +24,19 @@ export const GETstaffDetails = async (staffId) => {
   });
   return response;
 };
+
+export const POSTbooking = async (data) => {
+  const response = await APIService.fetchData({
+    url: `${baseURL}/add-booking`,
+    method: "POST",
+    data,
+  });
+  return response;
+};
+export const GETmyBooking = async () => {
+  const response = await APIService.fetchData({
+    url: `${baseURL}/my-booking`,
+    method: "GET",
+  });
+  return response;
+};

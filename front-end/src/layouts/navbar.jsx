@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
-import { Menu, X, User, Settings, Bell, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Menu, X, LogOut } from "lucide-react";
 
 const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "My Appointments", href: "/appointments" },
-  { label: "My Services", href: "/services" },
-  { label: "Staff", href: "/staff" },
-  { label: "Reports", href: "/reports" },
+  { label: "Home", href: "/user/home" },
+  { label: "My Services", href: "/user/my-booking" },
 ];
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState("/");
+  const [activeLink, setActiveLink] = useState("/home");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -30,6 +29,13 @@ const Navbar = () => {
   const handleLinkClick = (href) => {
     setActiveLink(href);
     setMobileMenuOpen(false);
+    navigate(href);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/auth/login");
   };
 
   const NavItem = ({ link, isMobile = false }) => {
@@ -75,25 +81,17 @@ const Navbar = () => {
           {navLinks.map((link, index) => (
             <NavItem key={index} link={link} />
           ))}
+          {/* زر Logout للنسخة الديسكتوب */}
+          <button
+            className="flex items-center gap-2 px-4 py-2 text-sm xl:text-base rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+            onClick={handleLogout}
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </button>
         </ul>
 
         <div className="flex items-center gap-4">
-          <div className="hidden lg:flex items-center gap-3">
-            <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-              <Bell className="w-5 h-5" />
-            </button>
-            <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-              <Settings className="w-5 h-5" />
-            </button>
-            <div className="w-px h-6 bg-gray-200"></div>
-            <button className="flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <User className="w-4 h-4 text-blue-600" />
-              </div>
-              <span className="text-sm font-medium">John Doe</span>
-            </button>
-          </div>
-
           <button
             className="lg:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -158,22 +156,9 @@ const Navbar = () => {
           </div>
 
           <div className="p-6 border-t border-gray-100 space-y-4">
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                <User className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <div className="text-sm font-medium text-gray-900">
-                  John Doe
-                </div>
-                <div className="text-xs text-gray-500">Staff Member</div>
-              </div>
-            </div>
             <button
               className="flex items-center gap-3 w-full p-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-              onClick={() => {
-                setMobileMenuOpen(false);
-              }}
+              onClick={handleLogout}
             >
               <LogOut className="w-5 h-5" />
               <span className="text-sm font-medium">Logout</span>

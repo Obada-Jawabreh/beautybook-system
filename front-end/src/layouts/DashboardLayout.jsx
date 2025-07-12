@@ -17,13 +17,7 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 
 const DashboardLayout = ({ role }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  // const [currentUser, setCurrentUser] = useState({
-  //   name: "Ahmed Mohammed",
-  //   role: role || "admin",
-  //   avatar:
-  //     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face",
-  //   email: "ahmed@beautybook.com",
-  // });
+
 
   const location = useLocation();
 
@@ -31,15 +25,11 @@ const DashboardLayout = ({ role }) => {
     admin: [
       { name: "Services", icon: Scissors, href: "/admin/services" },
       { name: "Staff", icon: Users, href: "/admin/staff" },
-      // { name: "Appointments", icon: Calendar, href: "/appointments" },
-      // { name: "Clients", icon: UserCheck, href: "/clients" },
-      { name: "Settings", icon: Settings, href: "/admin/settings" },
     ],
     staff: [
       { name: "Appointments", icon: Calendar, href: "/staff/appointments" },
       { name: "My Services", icon: Scissors, href: "/staff/my-services" },
       { name: "My Users", icon: UserCheck, href: "/staff/my-users" },
-      { name: "Profile", icon: User, href: "/staff/profile" },
     ],
   };
 

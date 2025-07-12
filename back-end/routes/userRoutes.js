@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/userController/admin");
 const servicesController = require("../controllers/userController/services");
+const bookingController = require("../controllers/userController/booking");
 const auth = require("../middleware/authMiddleware");
 const checkRole = require("../middleware/checkRoleMiddleware");
 router.get(
@@ -22,4 +23,17 @@ router.get(
   checkRole(["user"]),
   servicesController.getStaffDetails
 );
+router.post(
+  "/add-booking",
+  auth,
+  checkRole(["user"]),
+  bookingController.createBooking
+);
+router.get(
+  "/my-booking",
+  auth,
+  checkRole(["user"]),
+  bookingController.getBookings
+);
+
 module.exports = router;

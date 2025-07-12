@@ -9,6 +9,13 @@ export const GETMyServices = async () => {
   });
   return response;
 };
+export const GETMyUsers = async () => {
+  const response = await APIService.fetchData({
+    url: `${baseURL}/my-users`,
+    method: "GET",
+  });
+  return response;
+};
 
 export const POSTaddAppointment = async (data) => {
   const response = await APIService.fetchData({
@@ -44,6 +51,17 @@ export const DELETEAppointment = async (id) => {
   const response = await APIService.fetchData({
     url: `${baseURL}/delete-appointment/${id}`,
     method: "DELETE",
+  });
+  return response;
+};
+
+export const PUTbooking = async (bookingId, status) => {
+  console.log(status);
+
+  const response = await APIService.fetchData({
+    url: `${baseURL}/update-booking-status/${bookingId}`,
+    method: "PUT",
+    data: {status},
   });
   return response;
 };

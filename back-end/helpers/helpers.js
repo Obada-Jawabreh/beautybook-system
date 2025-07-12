@@ -23,7 +23,7 @@ const calculateAvailableSlots = (appointments, bookings) => {
       });
     }
 
-    availableSlots.push({
+    availableSlots.push({ id: appointment.id, 
       date: appointment.schedule_date.toISOString().split("T")[0],
       dayName: new Date(appointment.schedule_date).toLocaleDateString("en-US", {
         weekday: "long",

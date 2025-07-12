@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./back-end
+    container_name: backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./back-end:/usr/src/app
+      - ./back-end/.env:/usr/src/app/.env
+    environment:
+      - DATABASE_URL=mysql://obada:obada@db:3306/beauty_book
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./front-end
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - app-network
+
+  db:
+    image: mysql:5.7
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: obada
+      MYSQL_DATABASE: beauty_book
+      MYSQL_USER: obada
+      MYSQL_PASSWORD: obada
+    ports:
+      - "3307:3306"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

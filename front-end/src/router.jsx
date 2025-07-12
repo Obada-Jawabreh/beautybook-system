@@ -13,6 +13,8 @@ import MyServices from "./pages/staff/MyServices";
 import HomePage from "./pages/user/HomePage";
 import StaffPage from "./pages/user/StaffPage";
 import StaffDetails from "./pages/user/staffDetails";
+import MyBooking from "./pages/user/MyBooking";
+import MyUsers from "./pages/staff/MyUsers";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -70,6 +72,10 @@ const router = createBrowserRouter([
             path: "my-services",
             element: <MyServices />,
           },
+          {
+            path: "my-users",
+            element: <MyUsers />,
+          },
         ],
       },
     ],
@@ -97,6 +103,10 @@ const router = createBrowserRouter([
           {
             path: "staff/details/:staffId",
             element: <StaffDetails />,
+          },
+          {
+            path: "my-booking",
+            element: <MyBooking />,
           },
         ],
       },
