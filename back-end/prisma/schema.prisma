@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "mysql"
+  url = env("DATABASE_URL")
+}
+enum Role {
+  admin
+  user
+}
+enum Status {
+  pending
+  approved 
+  rejected
+}
+model User {
+  id                Int         @id @default(autoincrement())
+  first_name        String
+  last_name         String
+  email             String      @unique
+  password          String
+  role              Role        @default(user)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  adminServices     Service[]      @relation("AdminServices")
+  bookings          Booking[]      @relation("UserBookings")
+  staff  Staff[]      @relation("AdminToStaff")
+
+  @@map("users") 
+}
+
+model Staff {
+  id            Int        @id @default(autoincrement())
+  first_name        String
+  last_name         String
+  email             String      @unique
+  password          String
+  admin_id       Int
+  status            Status      @default(pending)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  admin         User       @relation(fields: [admin_id], references: [id] , name: "AdminToStaff")
+  services          Service[]      @relation("Services")
+  appointments      Appointment[]  @relation("ProviderAppointments") 
+  providerBookings  Booking[]      @relation("ProviderBookings")
+
+  @@map("staff")
+}
+//-------------Appointment--------------
+model Appointment {
+  id            Int       @id @default(autoincrement()) 
+  staff_id   Int      
+  schedule_date DateTime  
+  start_time    String  
+  end_time      String  
+  createdAt     DateTime  @default(now()) 
+  updatedAt     DateTime  @updatedAt 
+
+  provider      Staff      @relation(fields: [staff_id], references: [id] , name: "ProviderAppointments") 
+
+   bookings        Booking[]         @relation("AppointmentBookings")
+
+  @@map("appointments")  
+}
+//-------------Service--------------
+
+model Service {
+  id            Int       @id @default(autoincrement())
+  admin_id      Int
+  staff_id   Int
+  name          String
+  price         Float
+  description   String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  admin         User      @relation(fields: [admin_id], references: [id], name: "AdminServices") 
+  staff          Staff      @relation(fields: [staff_id], references: [id], name: "Services")
+  bookings        Booking[]         @relation("ServiceBookings")
+  @@map("services")
+}
+//-------------Booking--------------
+model Booking {
+  id              Int       @id @default(autoincrement())
+  clientId        Int       
+  staff_id      Int 
+  appointmentId   Int      
+  booking_start_time String
+
+  serviceId       Int           
+  status          String    @default("pending")
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user            User      @relation(fields: [clientId], references: [id] , name: "UserBookings")
+  staff        Staff      @relation(fields: [staff_id], references: [id], name: "ProviderBookings")
+  appointment     Appointment @relation(fields: [appointmentId], references: [id], name: "AppointmentBookings" )
+  service         Service   @relation(fields: [serviceId], references: [id], name: "ServiceBookings" )
+
+  @@map("bookings")
+}
